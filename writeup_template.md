@@ -45,9 +45,15 @@ You're reading it!
 
 The code for this step is contained in the first code cell of the IPython notebook located in "./examples/example.ipynb" (or in lines # through # of the file called `some_file.py`).  
 
-I start by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the world. Here I am assuming the chessboard is fixed on the (x, y) plane at z=0, such that the object points are the same for each calibration image.  Thus, `objp` is just a replicated array of coordinates, and `objpoints` will be appended with a copy of it every time I successfully detect all chessboard corners in a test image.  `imgpoints` will be appended with the (x, y) pixel position of each of the corners in the image plane with each successful chessboard detection.  
+I start by preparing the object points as a reference points for the calibration. The object points defines the "real" position (as well as the form) of the object shown
 
-I then used the output `objpoints` and `imgpoints` to compute the camera calibration and distortion coefficients using the `cv2.calibrateCamera()` function.  I applied this distortion correction to the test image using the `cv2.undistort()` function and obtained this result: 
+in an image, which is chessboard in our case. I then use cv2.findChessboard to get the chessboard points (image points) on each image. Using these image points, object points
+
+and cv2.calibrateCamera function the camera is calibrated. The calibration results are an intrinsic and extrinsic parameters of the camera, whereas the extrinsic parameters are
+
+image specific because they define the position of the camera with respect to the camera coordinate which I defined in the object points. Only the intrinsic parameters (cx,cy,fx,fy,dist)
+
+are used to undistort the images using cv2.undistort function. The undistort result is as follows:
 
 ![alt text][image1]
 
@@ -55,18 +61,31 @@ I then used the output `objpoints` and `imgpoints` to compute the camera calibra
 
 #### 1. Provide an example of a distortion-corrected image.
 
-To demonstrate this step, I will describe how I apply the distortion correction to one of the test images like this one:
+Using the intrinsic parameters and cv2.undistort function I can also undistort other images that uses the same camera:
+
 ![alt text][image2]
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
-I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in `another_file.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
+The ideal way to this is by basically combining the image color channels using an appropriate weight and activation function (much more like convolution neural network), but it is very time
+
+consuming to pick the weights by hand and so I did not do it for this project. Instead, I am using more than one thresholded binary images and try to use it in a if else fashion. So for example,
+
+if the right line is not found in the S channel, then I will look for it in the H channel. The idea is to use a strong filter first and then going to the other filter if the lines not found.
+
+In this project I use 3 types of channels: yellow channel, S from HLS channel and gradient magnitude. For the yellow channel I combine the L and b of Lab channel. It is in my opinion the most
+
+robust line finding channel in comparison to the other channel, with the weakness that it only detects yellow line. The S channel is also robust to segment the lines from the scene, but because
+
+it is a very hard filter, sometimes the lines are just disappeared from the scene. The gradient magnitude did a very good job in separating lines from the scene. But it also includes other lines
+
+in the scene.
 
 ![alt text][image3]
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
-The code for my perspective transform includes a function called `warper()`, which appears in lines 1 through 8 in the file `example.py` (output_images/examples/example.py) (or, for example, in the 3rd code cell of the IPython notebook).  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
+The code for my perspective transform is included in the constructor of LineDetector, which appears in in the file `example.ipynb`, 3rd code cell.  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
 
 ```python
 src = np.float32(

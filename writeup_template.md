@@ -44,15 +44,10 @@ You're reading it!
 #### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
 
 The code for this step is contained in the first code cell of the IPython notebook located in "./examples/example.ipynb" (or in lines # through # of the file called `some_file.py`).  
-
 I start by preparing the object points as a reference points for the calibration. The object points defines the "real" position (as well as the form) of the object shown
-
 in an image, which is chessboard in our case. I then use cv2.findChessboard to get the chessboard points (image points) on each image. Using these image points, object points
-
 and cv2.calibrateCamera function the camera is calibrated. The calibration results are an intrinsic and extrinsic parameters of the camera, whereas the extrinsic parameters are
-
 image specific because they define the position of the camera with respect to the camera coordinate which I defined in the object points. Only the intrinsic parameters (cx,cy,fx,fy,dist)
-
 are used to undistort the images using cv2.undistort function. The undistort result is as follows:
 
 ![alt text][image1]
@@ -68,17 +63,11 @@ Using the intrinsic parameters and cv2.undistort function I can also undistort o
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
 The ideal way to this is by basically combining the image color channels using an appropriate weight and activation function (much more like convolution neural network), but it is very time
-
 consuming to pick the weights by hand and so I did not do it for this project. Instead, I am using more than one thresholded binary images and try to use it in a if else fashion. So for example,
-
 if the right line is not found in the S channel, then I will look for it in the H channel. The idea is to use a strong filter first and then going to the other filter if the lines not found.
-
 In this project I use 3 types of channels: yellow channel, S from HLS channel and gradient magnitude. For the yellow channel I combine the L and b of Lab channel. It is in my opinion the most
-
 robust line finding channel in comparison to the other channel, with the weakness that it only detects yellow line. The S channel is also robust to segment the lines from the scene, but because
-
 it is a very hard filter, sometimes the lines are just disappeared from the scene. The gradient magnitude did a very good job in separating lines from the scene. But it also includes other lines
-
 in the scene.
 
 ![alt text][image3]

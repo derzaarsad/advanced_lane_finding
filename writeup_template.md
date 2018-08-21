@@ -43,7 +43,7 @@ You're reading it!
 
 #### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
 
-The code for this step is contained in the first code cell of the IPython notebook located in "./examples/example.ipynb" (or in lines # through # of the file called `some_file.py`).  
+The code for this step is contained in the first code cell of the IPython notebook located in "./examples/example.ipynb" (or in lines # through # of the file called `some_file.py`).
 I start by preparing the object points as a reference points for the calibration. The object points defines the "real" position (as well as the form) of the object shown
 in an image, which is chessboard in our case. I then use cv2.findChessboard to get the chessboard points (image points) on each image. Using these image points, object points
 and cv2.calibrateCamera function the camera is calibrated. The calibration results are an intrinsic and extrinsic parameters of the camera, whereas the extrinsic parameters are

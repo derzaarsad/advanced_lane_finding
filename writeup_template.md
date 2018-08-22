@@ -31,11 +31,11 @@ The goals / steps of this project are the following:
 
 #### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
 
-The code for this step is located in the first code cell of the IPython notebook under "./examples/example.ipynb".
-First I prepare the object points as reference points for the calibration. The object points define the position of the calibration pattern, which in our case the chessboard, in a reference coordinate system. Then I
-use cv2.findChessboard to find the chessboard points (image points) in the image. The object and image points are passed to the cv2.calibrateCamera function to calculate the camera model (calibration). The calibration results are
-intrinsic and extrinsic parameters of the camera. The extrinsic parameters describe the position of the camera in the reference coordinate system, which is why the parameters are different for each chessboard image. However, only
-the intrinsic parameters are used in this project. The intrinsic parameters (cx,cy,fx,fy,dist) are used to undistort the images with the cv2.undistort function. An example of the undistorted image is as follows:
+The code for this step is located in the first code cell of the IPython notebook under "./examples/example.ipynb". First I prepare the object points as reference points for the calibration. The object points define the position
+of the calibration pattern, which in our case the chessboard, in a reference coordinate system. Then I use cv2.findChessboard to find the chessboard points (image points) in the image. The object and image points are passed to
+the cv2.calibrateCamera function to calculate the camera model (calibration). The calibration results are intrinsic and extrinsic parameters of the camera. The extrinsic parameters describe the position of the camera in the
+reference coordinate system, which is why the parameters are different for each chessboard image. However, only the intrinsic parameters are used in this project. The intrinsic parameters (cx,cy,fx,fy,dist) are used to undistort
+the images with the cv2.undistort function. An example of the undistorted image is as follows:
 
 ![alt text][image1]
 
@@ -49,13 +49,12 @@ Using the intrinsic parameters and cv2.undistort function I can also undistort o
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
-The ideal way to this is by basically combining the image color channels using an appropriate weight and activation function (much more like convolution neural network), but it is very time
-consuming to pick the weights by hand and so I did not do it for this project. Instead, I am using more than one thresholded binary images and try to use it in a if else fashion. So for example,
-if the right line is not found in the S channel, then I will look for it in the H channel. The idea is to use a strong filter first and then going to the other filter if the lines not found.
-In this project I use 3 types of channels: yellow channel, S from HLS channel and gradient magnitude. For the yellow channel I combine the L and b of Lab channel. It is in my opinion the most
-robust line finding channel in comparison to the other channel, with the weakness that it only detects yellow line. The S channel is also robust to segment the lines from the scene, but because
-it is a very hard filter, sometimes the lines are just disappeared from the scene. The gradient magnitude did a very good job in separating lines from the scene. But it also includes other lines
-in the scene.
+The ideal way to do this is basically by combining the image color channels using an appropriate weight and activation function (much more like convolution neural network), but it is very time consuming to pick the weights by hand
+and so I did not do it for this project. Instead, I am using more than one thresholded binary images and try to use it in a if else fashion. So for example, if the right line is not found in the S channel, then I will look for it
+in the H channel. The idea is to use the strongest filter first and then gradually reduce the tolerance (by using a softer filter) until the lines are found. In this project I use 3 types of channels: yellow channel, S from HLS
+channel and gradient magnitude. For the yellow channel I combine the L and b of Lab channel. It is in my opinion the most robust line finding channel in comparison to the other channel, with the weakness that it only detects yellow
+line. The S channel is also robust to segment the lines from the scene, however, under a weak contrast the lines can disappear from the scene. The gradient magnitude did a very good job in separating lines from the scene, however
+it also detects other irrelevant lines in the scene.
 
 ![alt text][image3]
 

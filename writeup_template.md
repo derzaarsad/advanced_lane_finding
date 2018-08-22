@@ -31,12 +31,11 @@ The goals / steps of this project are the following:
 
 #### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
 
-The code for this step is contained in the first code cell of the IPython notebook located in "./examples/example.ipynb" (or in lines # through # of the file called `some_file.py`).
-I start by preparing the object points as a reference points for the calibration. The object points defines the "real" position (as well as the form) of the object shown
-in an image, which is chessboard in our case. I then use cv2.findChessboard to get the chessboard points (image points) on each image. Using these image points, object points
-and cv2.calibrateCamera function the camera is calibrated. The calibration results are an intrinsic and extrinsic parameters of the camera, whereas the extrinsic parameters are
-image specific because they define the position of the camera with respect to the camera coordinate which I defined in the object points. Only the intrinsic parameters (cx,cy,fx,fy,dist)
-are used to undistort the images using cv2.undistort function. The undistort result is as follows:
+The code for this step is located in the first code cell of the IPython notebook under "./examples/example.ipynb".
+First I prepare the object points as reference points for the calibration. The object points define the position of the calibration pattern, which in our case the chessboard, in a reference coordinate system. Then I
+use cv2.findChessboard to find the chessboard points (image points) in the image. The object and image points are passed to the cv2.calibrateCamera function to calculate the camera model (calibration). The calibration results are
+intrinsic and extrinsic parameters of the camera. The extrinsic parameters describe the position of the camera in the reference coordinate system, which is why the parameters are different for each chessboard image. However, only
+the intrinsic parameters are used in this project. The intrinsic parameters (cx,cy,fx,fy,dist) are used to undistort the images with the cv2.undistort function. An example of the undistorted image is as follows:
 
 ![alt text][image1]
 

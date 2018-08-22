@@ -74,22 +74,8 @@ in the scene.
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
-The code for my perspective transform is included in the constructor of LineDetector, which appears in in the file `example.ipynb`, 3rd code cell.  The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points.  I chose the hardcode the source and destination points in the following manner:
-
-```python
-src = np.float32(
-    [[(img_size[0] / 2) - 55, img_size[1] / 2 + 100],
-    [((img_size[0] / 6) - 10), img_size[1]],
-    [(img_size[0] * 5 / 6) + 60, img_size[1]],
-    [(img_size[0] / 2 + 55), img_size[1] / 2 + 100]])
-dst = np.float32(
-    [[(img_size[0] / 4), 0],
-    [(img_size[0] / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), img_size[1]],
-    [(img_size[0] * 3 / 4), 0]])
-```
-
-This resulted in the following source and destination points:
+The code for my perspective transform is included in the constructor of LineDetector, which appears in in the file `example.ipynb`, 3rd code cell.
+The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points. This resulted in the following source and destination points:
 
 | Source        | Destination   | 
 |:-------------:|:-------------:| 
@@ -104,7 +90,8 @@ I verified that my perspective transform was working as expected by drawing the 
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
-Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
+I chose sliding windows method to identify the lanes on the image. However, instead of having a fix step size on the vertical direction, I modify it so that the windows can move in any direction and
+use a fix size for the displacement step. With this approach, it is possible to identify a lane with an extreme curve. Here is an example of a lane identification with an extreme curve:
 
 ![alt text][image5]
 

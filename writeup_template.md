@@ -95,9 +95,17 @@ use a fix size for the displacement step. With this approach, it is possible to 
 
 ![alt text][image5]
 
+After that I use polyfit function from numpy to fit their positions with a polynomial.
+
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
-I did this in lines # through # in my code in `my_other_file.py`
+I did this in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`. I calculate the radius of the curvature using the tutorial at
+https://www.intmath.com/applications-differentiation/8-radius-curvature.php. First of all, we need the polynomial equation of the lanes to calculate the radius using the method described in the tutorial. Actually, we already calculated
+the polynomial equation of the lanes on the previous step, however the calculated polynomial was fitted to coordinate of points in pixel instead of meter as we need. To get the result in meter, we have to estimate the pixel displacement
+in meter unit. In this project I used ym_per_pix = 30/720 and xm_per_pix = 3.7/700 as a meter per pixel estimation.
+
+The calculation of vehicle distance to the center is pretty straight forward. I only need to calculate the distance of the image center with the position of the first sliding window of the left lane in x axis, afterwards with the
+assumption that the vehicle lies between left and right lane and the distance between them is 3.7 m, I can calculate the distance of the vehicle to the center of the road.
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 

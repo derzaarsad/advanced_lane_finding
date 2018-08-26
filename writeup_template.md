@@ -34,7 +34,7 @@ The goals / steps of this project are the following:
 The code for this step is located in the first code cell of the IPython notebook under "./examples/example.ipynb". First I prepare the object points as reference points for the calibration. The object points define the position
 of the calibration pattern, which in our case the chessboard, in a reference coordinate system. Then I use cv2.findChessboard to find the chessboard points (image points) in the image. The object and image points are passed to
 the cv2.calibrateCamera function to calculate the camera model (calibration). The calibration results are intrinsic and extrinsic parameters of the camera. The extrinsic parameters describe the position of the camera in the
-reference coordinate system, which is why the parameters are different for each chessboard image. However, only the intrinsic parameters are used in this project. The intrinsic parameters (cx,cy,fx,fy,dist) are used to undistort
+reference coordinate system, which is why the results are different for each chessboard image. However, only the intrinsic parameters are used in this project. The intrinsic parameters (cx,cy,fx,fy,dist) are used to undistort
 the images with the cv2.undistort function. An example of the undistorted image is as follows:
 
 ![alt text][image1]
@@ -53,7 +53,7 @@ The ideal way to do this is basically by combining the image color channels usin
 and so I did not do it for this project. Instead, I am using more than one thresholded binary images and try to use it in a if else fashion. So for example, if the right line is not found in the S channel, then I will look for it
 in the H channel. The idea is to use the strongest filter first and then gradually reduce the tolerance (by using a softer filter) until the lines are found. In this project I use 3 types of channels: yellow channel, S from HLS
 channel and gradient magnitude. For the yellow channel I combine the L and b of Lab channel. It is in my opinion the most robust line finding channel in comparison to the other channel, with the weakness that it only detects yellow
-line. The S channel is also robust to segment the lines from the scene, however, under a weak contrast the lines can disappear from the scene. The gradient magnitude did a very good job in separating lines from the scene, however
+line. The S channel is also robust to segment the lines from the scene, however under a weak contrast, the lines can disappear from the scene. The gradient magnitude did a very good job in separating lines from the scene, however
 it also detects other irrelevant lines in the scene.
 
 ![alt text][image3]
@@ -85,7 +85,7 @@ After that I use polyfit function from numpy to fit their positions with a polyn
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
-I did this in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`. I calculate the radius of the curvature using the tutorial at
+I did this in my code in `./examples/example.ipynb` in the methode `measure_curvature()` from LineDetector. I calculate the radius of the curvature using the tutorial at
 https://www.intmath.com/applications-differentiation/8-radius-curvature.php. First of all, we need the polynomial equation of the lanes to calculate the radius using the method described in the tutorial. Actually, we already calculated
 the polynomial equation of the lanes on the previous step, however the calculated polynomial was fitted to coordinate of points in pixel instead of meter as we need. To get the result in meter, we have to estimate the pixel displacement
 in meter unit. In this project I used ym_per_pix = 30/720 and xm_per_pix = 3.7/700 as a meter per pixel estimation.
@@ -95,7 +95,7 @@ assumption that the vehicle lies between left and right lane and the distance be
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
 
-I implemented this step in lines # through # in my code in `yet_another_file.py` in the function `map_lane()`.  Here is an example of my result on a test image:
+I implemented this step in `./examples/example.ipynb` in the function `process_image()` in the 4th code cell.  Here is an example of my result on a test image:
 
 ![alt text][image6]
 
@@ -105,7 +105,7 @@ I implemented this step in lines # through # in my code in `yet_another_file.py`
 
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (wobbly lines are ok but no catastrophic failures that would cause the car to drive off the road!).
 
-Here's a [link to my video result](./project_video.mp4)
+Here's a [link to my video result](./test_videos_output/project_video.mp4)
 
 ---
 
@@ -113,4 +113,5 @@ Here's a [link to my video result](./project_video.mp4)
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+With this implementation, the images are processed independently of each other, so no information from the previous frame is retained in the calculation of the current frame. This sliding windows from the previous frame can actually give us
+an initial approximation of the current possible lane position and is therefore very helpful, especially if the lane is only minimally visible in the current frame.

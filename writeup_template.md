@@ -61,7 +61,7 @@ it also detects other irrelevant lines in the scene.
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
 The code for my perspective transform is included in the constructor of LineDetector, which appears in in the file `example.ipynb`, 3rd code cell.
-The `warper()` function takes as inputs an image (`img`), as well as source (`src`) and destination (`dst`) points. This resulted in the following source and destination points:
+The `get_binary_warped()` function takes as inputs an image (`img`). The source (`src`) and destination (`dst`) points are already calculated in the constructor of LineDetector. This resulted in the following source and destination points:
 
 | Source        | Destination   | 
 |:-------------:|:-------------:| 
@@ -113,5 +113,7 @@ Here's a [link to my video result](./test_videos_output/project_video.mp4)
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-With this implementation, the images are processed independently of each other, so no information from the previous frame is retained in the calculation of the current frame. This sliding windows from the previous frame can actually give us
-an initial approximation of the current possible lane position and is therefore very helpful, especially if the lane is only minimally visible in the current frame.
+With this implementation, the images are processed independently of each other, so no information from the previous frame is retained in the calculation of the current frame. The sliding windows from the previous frame can actually be very helpful
+to calculate a first approximation to the current possible lane position, especially if the lane is only minimally visible in the current frame. An example of this problem can be seen in [harder_challenge_video](./test_videos_output/harder_challenge_video.mp4)
+where the detection of the lane fails when a very bright light strikes the scene. The other improvement is by creating a better filter by combining color channels, weights and activation function, as I mentioned earlier in the pipeline explanation.
+Unfortunately this can only be achieved by manually selecting the parameters and trying them out or by training as in a Convolutional Neural Network. Both methods are time consuming and require a large amount data.

@@ -54,12 +54,12 @@ and so I did not do it for this project. Instead of implementing a filter that c
 experiment with the parameter of each color filter independently. After experimenting for a while, I noticed that it is very hard to create a filter that can capture the lanes clearly without introducing any noise, therefore I
 decided to just let the noise or outlier exist and then later filter the resulting false detected windows with RANSAC algorithm. In this project I use 3 types of masks: white mask, yellow mask and gradient magnitude mask. For the white mask I combined the HSV and
 L from Luv channels, where for the yellow mask I combined the HSV and b from Lab channels. Both filters are in my opinion very robust, however at the end I saw that the white mask works better under a different light condition in
-comparison to the yellow mask. I added a gradient magnitude mask because it does a very good job in separating lines from the scene although it also detects other irrelevant lines in the scene. The binary threshold can be seen in the 4th code cell
+comparison to the yellow mask. I added a gradient magnitude mask because it does a very good job in separating lines from the scene although it also detects other irrelevant lines in the scene. The binary threshold can be seen in the 4th code cell.
 ![alt text][image3]
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
-The code for my perspective transform is included in the constructor of LineDetector, which appears in in the file `example.ipynb` in the 'process_image' method.
+The code for my perspective transform is included in the constructor of LineDetector, which appears in in the file `example.ipynb` in the `process_image()` method.
 The `get_binary_warped()` function takes as inputs an image (`img`). The source (`src`) and destination (`dst`) points are already calculated in the constructor of LineDetector. This resulted in the following source and destination points:
 
 | Source        | Destination   | 
@@ -90,7 +90,7 @@ themselves and then feed np.polyfit with these inliers. That way, we get a highl
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
-I did this in my code in './examples/example.ipynb' in the methode 'measure_curvature()'. I calculate the radius of the curvature using the tutorial at
+I did this in my code in './examples/example.ipynb' in the methode `measure_curvature()`. I calculate the radius of the curvature using the tutorial at
 https://www.intmath.com/applications-differentiation/8-radius-curvature.php. First of all, we need the polynomial equation of the lanes to calculate the radius using the method described in the tutorial. Actually, we already calculated
 the polynomial equation of the lanes on the previous step, however the calculated polynomial was fitted to coordinate of points in pixel instead of meter as we need. To get the result in meter, we have to estimate the pixel displacement
 in meter unit. In this project I used ym_per_pix = 30/720 and xm_per_pix = 3.7/700 as a meter per pixel estimation.

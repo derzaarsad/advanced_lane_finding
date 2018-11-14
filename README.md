@@ -50,9 +50,9 @@ Using the intrinsic parameters and cv2.undistort function I can also undistort o
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
 The ideal way to do this is basically by combining the image color channels using an appropriate weight and activation function (much more like convolution neural network), but it is very time consuming to pick the weights by hand
-and so I did not do it for this project. Instead of implementing a filter that could work decently for all possible lane color, I created separate filters for each color that is normally used on the street lane, that way I could
+and so I did not do it for this project. Instead of implementing a filter that could work decently for all possible lane color (yellow and white), I created separate filters for each color that is normally used on the street lane, that way I could
 experiment with the parameter of each color filter independently. After experimenting for a while, I noticed that it is very hard to create a filter that can capture the lanes clearly without introducing any noise, therefore I
-decided to just let the noise or outlier exist and then later filter it with RANSAC algorithm. In this project I use 3 types of masks: white mask, yellow mask and gradient magnitude mask. For the white mask I combined the HSV and
+decided to just let the noise or outlier exist and then later filter the resulting false detected windows with RANSAC algorithm. In this project I use 3 types of masks: white mask, yellow mask and gradient magnitude mask. For the white mask I combined the HSV and
 L from Luv channels, where for the yellow mask I combined the HSV and b from Lab channels. Both filters are in my opinion very robust, however at the end I saw that the white mask works better under a different light condition in
 comparison to the yellow mask. I added a gradient magnitude mask because it does a very good job in separating lines from the scene although it also detects other irrelevant lines in the scene.
 
@@ -84,13 +84,11 @@ with the assumption that the distance between left and right windows on the same
 of the continuity of the lane, however it is very susceptible with noise with a high point concentration, for this reason I implemented a filter based on RANSAC to remove the false windows and then feed the np.polyfit only with good windows.
 
 The code of the RANSAC filter can be seen in the 3rd code cell. RANSAC is an iterative fitting algorithm where in each iteration a set of random points is taken and then a model based on these points is calculated. The inliers or the points that fit with
-the model are identified by calculating the distance between the model and the other points as well as applying a threshold of maximum allowed distance. By each iteration the number of inliers are calculated and then the model with the most inliers is
-considered to be the right model. In our case, the model is a polynomial therefore the model that is calculated on each iteration consists only of 3 points. To achieve higher accuracy, I take all the inliers inclusive the points that are used for the model
+the model are identified by calculating the distance between the model and all of the points as well as applying a threshold of maximum allowed distance. By each iteration the number of inliers are calculated and then at the end the model with the most inliers is
+considered to be the right model. In our case, the model is a polynomial, therefore the model that is calculated on each iteration is made only by 3 points. To achieve a more accurate model generalization, I take all the inliers inclusive the points that are used for the model
 themselves and then feed np.polyfit with these inliers. That way, we get a highly accurate line estimation without considering the outliers.
 
 ![alt text][image5]
-
-After that I use polyfit function from numpy to fit their positions with a polynomial.
 
 #### 5. Describe how (and identify where in your code) you calculated the radius of curvature of the lane and the position of the vehicle with respect to center.
 
